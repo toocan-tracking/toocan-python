@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "toocan"
+version = "2.8.0"
+description = "TOOCAN - Tracking Of Organized Deep Convection using 3-dimensional segmentatioN"
+authors = [
+    { name = "Thomas Fiolleau" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+
+dependencies = [
+    "numpy",
+    "scipy",
+    "xarray",
+    "pandas",
+    "scikit-image"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["toocan*"]
+
+[tool.setuptools.package-data]
+"toocan.lib.detection_spreading" = ["*.so", "*.dll", "*.dylib"]

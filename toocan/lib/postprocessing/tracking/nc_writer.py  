@@ -1,0 +1,183 @@
+import xarray as xr
+import numpy as np
+
+def write_tracking_nc_old(outfile, INT, LC, global_times,
+                      region="AFRICA",
+                      platform="MSG",
+                      title="TOOCAN Tracking",
+                      version="3.0.0"):
+
+    dcs_ids = LC["DCS_ids"]
+    time_seconds = np.array([int(t.timestamp()) for t in global_times], dtype=np.int32)
+
+    ds = xr.Dataset(
+        coords={
+            "DCS": ("DCS", np.array(dcs_ids, dtype=np.int32)),
+            "time": ("time", time_seconds)
+        }
+    )
+
+    # Fill INT
+    for key in INT[dcs_ids[0]]:
+        ds["INT_" + key] = ("DCS", np.array([INT[lab][key] for lab in dcs_ids]))
+
+    # Fill LC
+    for key in LC:
+        if key == "DCS_ids":
+            continue
+        ds[key] = (("DCS", "time"), LC[key])
+
+    ds.attrs.update({
+        "title": title,
+        "tracker": "TOOCAN",
+        "version": version,
+        "region": region,
+        "platform": platform
+    })
+
+    ds.to_netcdf(outfile)
+    print("✔ Saved:", outfile)
+
+
+
+def write_tracking_nc(outfile, INT, LC, global_times,
+                      title="TOOCAN - Morphological characteristics of the Deep Convective Systems",
+                      region="AFRICA",
+                      platform="MSG",
+                      version="2.08"):
+    """
+    Écrit un NetCDF proche de TOOCAN v2.08.
+    """
+
+    dcs_ids = LC["DCS_ids"]
+    n_dcs   = len(dcs_ids)
+    n_time  = len(global_times)
+
+    # vecteurs INT
+    INT_duration     = [INT[lab]["duration_hours"]      for lab in dcs_ids]
+    INT_UTC_timeInit = [INT[lab]["UTC_init"]            for lab in dcs_ids]
+    INT_UTC_timeEnd  = [INT[lab]["UTC_end"]             for lab in dcs_ids]
+    INT_lonInit      = [INT[lab]["lon_init"]            for lab in dcs_ids]
+    INT_latInit      = [INT[lab]["lat_init"]            for lab in dcs_ids]
+    INT_lonEnd       = [INT[lab]["lon_end"]             for lab in dcs_ids]
+    INT_latEnd       = [INT[lab]["lat_end"]             for lab in dcs_ids]
+    INT_velocityAvg  = [INT[lab]["velocity_ms"]         for lab in dcs_ids]
+    INT_distance     = [INT[lab]["distance_km"]         for lab in dcs_ids]
+    INT_lonmin       = [INT[lab]["lon_min"]             for lab in dcs_ids]
+    INT_lonmax       = [INT[lab]["lon_max"]             for lab in dcs_ids]
+    INT_latmin       = [INT[lab]["lat_min"]             for lab in dcs_ids]
+    INT_latmax       = [INT[lab]["lat_max"]             for lab in dcs_ids]
+    INT_tbmin        = [INT[lab]["tb_min_global"]       for lab in dcs_ids]
+    INT_surfmaxkm2_235 = [INT[lab]["surfmaxkm2_235"]    for lab in dcs_ids]
+    INT_surfmaxkm2_220 = [INT[lab]["surfmaxkm2_220"]    for lab in dcs_ids]
+    INT_surfmaxkm2_210 = [INT[lab]["surfmaxkm2_210"]    for lab in dcs_ids]
+    INT_surfmaxkm2_200 = [INT[lab]["surfmaxkm2_200"]    for lab in dcs_ids]
+    INT_surfcumkm2_235 = [INT[lab]["surfcumkm2_235"]    for lab in dcs_ids]
+    INT_qltyDCS        = [INT[lab]["qltyDCS"]           for lab in dcs_ids]
+    INT_classif        = [INT[lab]["classif_Roca"]      for lab in dcs_ids]
+    INT_classif_JIRAK  = [INT[lab]["classif_JIRAK"]     for lab in dcs_ids]
+    INT_classif_MADDOX = [INT[lab]["classif_MADDOX"]    for lab in dcs_ids]
+    INT_TS_number_IBTRACS   = [INT[lab]["TS_number_IBTRACS"]   for lab in dcs_ids]
+    INT_TS_nature_IBTRACS   = [INT[lab]["TS_nature_IBTRACS"]   for lab in dcs_ids]
+    INT_TS_mindistance_IBTRACS = [INT[lab]["TS_mindistance_IBTRACS"] for lab in dcs_ids]
+
+    # temps en int
+    time_seconds = np.array([np.int32(t.timestamp()) for t in global_times], dtype=np.int32)
+
+    # QC GEO IR image par pas de temps -> ici 1 (= full data OK)
+    QCgeo_IRimage = np.ones(n_time, dtype=np.int32)
+
+    ds = xr.Dataset(
+        coords = {
+            "DCS": ("DCS", np.array(dcs_ids, dtype=np.int32)),
+            "time": ("time", time_seconds),
+        },
+        data_vars = {
+            # === Intégral (DCS) ===
+            "DCS": (("DCS",), np.array(dcs_ids, dtype=np.int32)),
+            "INT_DCSnumber": (("DCS",), np.array(dcs_ids, dtype=np.int32)),
+            "INT_DCS_qualitycontrol": (("DCS",), np.array(INT_qltyDCS, dtype=np.int32)),
+            "INT_classif": (("DCS",), np.array(INT_classif, dtype=np.int32)),
+            "INT_duration": (("DCS",), np.array(INT_duration, dtype=np.float32)),
+            "INT_UTC_timeInit": (("DCS",), np.array(INT_UTC_timeInit, dtype=np.int32)),
+            "INT_UTC_timeEnd":  (("DCS",), np.array(INT_UTC_timeEnd,  dtype=np.int32)),
+            "INT_lonInit": (("DCS",), np.array(INT_lonInit, dtype=np.float32)),
+            "INT_latInit": (("DCS",), np.array(INT_latInit, dtype=np.float32)),
+            "INT_lonEnd":  (("DCS",), np.array(INT_lonEnd,  dtype=np.float32)),
+            "INT_latEnd":  (("DCS",), np.array(INT_latEnd,  dtype=np.float32)),
+            "INT_velocityAvg": (("DCS",), np.array(INT_velocityAvg, dtype=np.float32)),
+            "INT_distance":    (("DCS",), np.array(INT_distance,    dtype=np.float32)),
+            "INT_lonmin": (("DCS",), np.array(INT_lonmin, dtype=np.float32)),
+            "INT_lonmax": (("DCS",), np.array(INT_lonmax, dtype=np.float32)),
+            "INT_latmin": (("DCS",), np.array(INT_latmin, dtype=np.float32)),
+            "INT_latmax": (("DCS",), np.array(INT_latmax, dtype=np.float32)),
+            "INT_tbmin":  (("DCS",), np.array(INT_tbmin,  dtype=np.float32)),
+            "INT_surfmaxkm2_235K": (("DCS",), np.array(INT_surfmaxkm2_235, dtype=np.float32)),
+            "INT_surfmaxkm2_220K": (("DCS",), np.array(INT_surfmaxkm2_220, dtype=np.float32)),
+            "INT_surfmaxkm2_210K": (("DCS",), np.array(INT_surfmaxkm2_210, dtype=np.float32)),
+            "INT_surfmaxkm2_200K": (("DCS",), np.array(INT_surfmaxkm2_200, dtype=np.float32)),
+            "INT_surfcumkm2_235K": (("DCS",), np.array(INT_surfcumkm2_235, dtype=np.float32)),
+            "INT_classif_JIRAK":   (("DCS",), np.array(INT_classif_JIRAK,  dtype=np.int32)),
+            "INT_classif_MADDOX":  (("DCS",), np.array(INT_classif_MADDOX, dtype=np.int32)),
+            "INT_TS_number_IBTRACS":   (("DCS",), np.array(INT_TS_number_IBTRACS, dtype=np.int32)),
+            "INT_TS_nature_IBTRACS":   (("DCS",), np.array(INT_TS_nature_IBTRACS, dtype=np.int32)),
+            "INT_TS_mindistance_IBTRACS": (("DCS",), np.array(INT_TS_mindistance_IBTRACS, dtype=np.float32)),
+
+            # === QC GEO ===
+            "QCgeo_IRimage": (("time",), QCgeo_IRimage),
+
+            # === LC : températures ===
+            "LC_tbmin":      (("DCS","time"), LC["LC_tbmin"]),
+            "LC_tbavg_235K": (("DCS","time"), LC["LC_tbavg_235K"]),
+            "LC_tbavg_208K": (("DCS","time"), LC["LC_tbavg_208K"]),
+            "LC_tbavg_200K": (("DCS","time"), LC["LC_tbavg_200K"]),
+            "LC_tb90th":     (("DCS","time"), LC["LC_tb90th"]),
+
+            # === LC : temps, positions ===
+            "LC_UTC_time": (("DCS","time"), LC["LC_UTC"]),
+            "LC_lon":      (("DCS","time"), LC["LC_lon"]),
+            "LC_lat":      (("DCS","time"), LC["LC_lat"]),
+            "LC_x":        (("DCS","time"), LC["LC_x"]),
+            "LC_y":        (("DCS","time"), LC["LC_y"]),
+            "LC_velocity": (("DCS","time"), LC["LC_velocity"]),
+
+            # === LC : surfaces froides ===
+            "LC_surfPix_235K": (("DCS","time"), LC["LC_surfPix_235K"]),
+            "LC_surfPix_210K": (("DCS","time"), LC["LC_surfPix_210K"]),
+            "LC_surfkm2_235K": (("DCS","time"), LC["LC_surfkm2_235K"]),
+            "LC_surfkm2_220K": (("DCS","time"), LC["LC_surfkm2_220K"]),
+            "LC_surfkm2_210K": (("DCS","time"), LC["LC_surfkm2_210K"]),
+            "LC_surfkm2_200K": (("DCS","time"), LC["LC_surfkm2_200K"]),
+
+            # === LC : ellipses équivalentes (placeholders pour le moment) ===
+            "LC_semiminor_235K":   (("DCS","time"), LC["LC_semiminor_235K"]),
+            "LC_semimajor_235K":   (("DCS","time"), LC["LC_semimajor_235K"]),
+            "LC_ecc_235K":         (("DCS","time"), LC["LC_ecc_235K"]),
+            "LC_orientation_235K": (("DCS","time"), LC["LC_orientation_235K"]),
+            "LC_semiminor_220K":   (("DCS","time"), LC["LC_semiminor_220K"]),
+            "LC_semimajor_220K":   (("DCS","time"), LC["LC_semimajor_220K"]),
+            "LC_ecc_220K":         (("DCS","time"), LC["LC_ecc_220K"]),
+            "LC_orientation_220K": (("DCS","time"), LC["LC_orientation_220K"]),
+        }
+    )
+
+    # Attributs minimaux
+    ds["time"].attrs.update({
+        "units": "seconds since 1970-01-01",
+        "long_name": "time",
+    })
+
+    ds.attrs.update({
+        "title": title,
+        "creator_name": "Thomas Fiolleau",
+        "institution": "CNRS/LEGOS/IPSL",
+        "conventions": "CF-1.6, ACDD-1.3",
+        "tracker": "TOOCAN",
+        "version": version,
+        "Geostationary_platform": platform,
+        "region": region,
+    })
+
+    ds.to_netcdf(outfile)
+    print("✔ Tracking saved →", outfile)
+

@@ -1,0 +1,47 @@
+models:
+
+  # -------------------------------
+  # MSG / SEVIRI harmonized IR BT
+  # -------------------------------
+  MSG:
+    type: IRBT          # déjà en BT harmonisé
+    variables:
+      irbt: ["Harmonized_irBT"]
+    lat_coord_candidates: ["latitude", "lat"]
+    lon_coord_candidates: ["longitude", "lon"]
+    time_coord_candidates: ["time"]
+
+  # -------------------------------
+  # ARPEGE NH (ton cas actuel)
+  # -------------------------------
+  ARPEGENH:
+    type: BT            # BT directe en Kelvin
+    variables:
+      bt: ["BT"]
+    lat_coord_candidates: ["latitude", "lat"]
+    lon_coord_candidates: ["longitude", "lon"]
+    time_coord_candidates: ["time"]
+    drop_dims: ["spec"]   # on fait isel(spec=0)
+
+  # -------------------------------
+  # Un modèle générique BT
+  # -------------------------------
+  GENERIC_BT:
+    type: BT
+    variables:
+      bt: ["BT", "Tb", "TBB", "brightness_temperature"]
+    lat_coord_candidates: ["lat", "latitude", "y"]
+    lon_coord_candidates: ["lon", "longitude", "x"]
+    time_coord_candidates: ["time"]
+
+  # -------------------------------
+  # RLUT / LWNTA → OLR → BT
+  # -------------------------------
+  RLUT_GENERIC:
+    type: OLR           # flux → on convertit en BT
+    variables:
+      olr: ["rlut", "LWNTA"]
+    lat_coord_candidates: ["lat", "latitude"]
+    lon_coord_candidates: ["lon", "longitude"]
+    time_coord_candidates: ["time"]
+    convert_to_irbt: true

@@ -1,0 +1,17 @@
+;##########################################################################################
+;###################################### GEO param ######################################
+;##########################################################################################
+
+;############################################ GEO/Model parameters  ##########################################
+REGION  	              = AFRICA
+GEOplatform               = MSG
+temporalresolution        = 30
+spatialresolution         = 0.04
+channel                   = IR10.8
+
+nadir                     = 0.0
+
+path_ir            = /bdd/GEOgrid_coldcloud/MSG+0000/
+file_navigation    = /bdd/GEOgrid_coldcloud/MSG+0000/navigation/navigation_MSG+0000.nc
+file_listGEO       = /home/fiolleau/TOOCAN/TOOCAN_V2.08_old/FileINPUT/AFRICA/fileparam_TOOCAN_20120101-20201231_AFRICA_40s40n.dat
+

@@ -1,0 +1,44 @@
+;##########################################################################################
+;###################################### TOOCAN param ######################################
+;##########################################################################################
+
+;##################   Definition of the period and geographical area  #####################
+yearBEGIN     	=     2024
+monthBEGIN    	=       08
+dayBEGIN    	=       30
+hourBEGIN     	=       00
+minBEGIN        =       10
+
+yearEND    	    =     2024
+monthEND    	=       08
+dayEND       	=       30
+hourEND     	=       23
+minEND          =       30
+
+lonmin  	    =      -62
+lonmax   	    =      -10
+latmin  	    =      -2
+latmax  	    =       22
+ 
+ 
+;##################  Version of the TOOCAN algorithm   #####################
+version = 2.08
+
+;################## PathOUT and fileINPUTS   #####################
+pathout_TOOCAN  =  /bdd/MT_WORKSPACE/MCS/TOOCAN/pyTOOCAN/MODEL/
+file_list = /home/fiolleau/TOOCAN/MODEL/TOOCAN_CRM/FileIN/ICON/0830/file_listICON.csv
+
+
+;################## Parameters of the TOOCAN algorithm   #####################
+minBT_threshold = 190
+maxBT_threshold = 235
+stepBT_threshold = 2
+deltaBT_Spread     = 1
+ 
+;Seeds Thresholds
+minAreaSeed    = 625
+minLifetime    = 3
+firstlabel     = 1
+
+VolumeImage    = 100
+overlap_window_size = 8

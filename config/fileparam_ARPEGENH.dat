@@ -1,0 +1,15 @@
+;##########################################################################################
+;###################################### ICON param ######################################
+;##########################################################################################
+
+;############################################ GEO/Model parameters  ##########################################
+REGION  	              = GLOBAL
+GEOplatform               = ARPEGENH
+temporalresolution        = 30
+spatialresolution         = 0.02
+variable                  = BT
+nadir                     = 0.0
+
+path_ir            = /bdd/MT_WORKSPACE/ARPEGE_NH/Tb_new_all/
+file_navigation    = /bdd/MT_WORKSPACE/MCS/MODELS/ARPEGE_NH/navigation/navigation_ARPEGE_NH.nc
+file_list          = /home/fiolleau/TOOCAN/MODEL/TOOCAN_CRM/FileIN/ICON/0830/file_listICON.csv

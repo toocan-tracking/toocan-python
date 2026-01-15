@@ -1,0 +1,17 @@
+;##########################################################################################
+;###################################### GEO param ######################################
+;##########################################################################################
+
+;############################################ GEO/Model parameters  ##########################################
+REGION  	              = AFRICA
+GEOplatform               = MSG_native
+temporalresolution        = 15
+spatialresolution         = 0.04
+channel                   = IR10.8
+
+nadir                     = 0.0
+
+path_ir            = /bdd/msg/images/netcdf/fulldisk_00/
+file_navigation    = /home/lgouttes/TOOCAN/MAESTRO/TOOCAN_15min/navigation/MSG+0000_EarthModel2.3km.nc
+file_listGEO       = /home/fiolleau/TOOCAN/TOOCAN_V2.08_old/FileINPUT/AFRICA/fileparam_TOOCAN_20120101-20201231_AFRICA_40s40n.dat
+

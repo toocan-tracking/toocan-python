@@ -1,0 +1,15 @@
+;##########################################################################################
+;###################################### ICON param ######################################
+;##########################################################################################
+
+;############################################ GEO/Model parameters  ##########################################
+REGION  	          = ATLANTIC
+GEOplatform               = ICON
+temporalresolution        = 10
+spatialresolution         = 0.01
+channel                   = IR10.8
+nadir                     = 0.0
+
+path               = /bdd/MT_WORKSPACE/MCS/TOOCAN/pyTOOCAN/MODEL/
+file_navigation    = /bdd/MT_WORKSPACE/MCS/MAESTRO/ICON/navigation/navigation_ICON.nc
+file_list          = /home/fiolleau/TOOCAN/MODEL/TOOCAN_CRM/FileIN/ICON/0830/file_listICON.csv

@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# ROOT (données / sorties)
+*.root
+
+# fichiers temporaires éditeurs
+*~
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Python packaging
+*.egg-info/

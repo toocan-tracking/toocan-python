@@ -1,0 +1,15 @@
+;##########################################################################################
+;###################################### ICON param ######################################
+;##########################################################################################
+
+;############################################ GEO/Model parameters  ##########################################
+REGION  	              = GLOBAL
+GEOplatform               = SAM
+temporalresolution        = 30
+spatialresolution         = 0.04
+channel                   = IR10.8
+nadir                     = 0.0
+
+path_ir            = /bdd/DYAMOND/SAM-4km/OUT_2D/
+file_navigation    = /home/fiolleau/TOOCAN/MODEL/TOOCAN_CRM/FileIN/Others/navigation_SAM.nc
+file_list          = /home/fiolleau/TOOCAN/MODEL/TOOCAN_CRM/FileIN/ICON/0830/file_listICON.csv
