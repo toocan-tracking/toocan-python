@@ -36,3 +36,12 @@ pyTOOCAN/
 ## ▶️ How to Run
 ```bash
 PYTHONPATH=src python scripts/run_toocan.py config/fileparam_TOOCAN.dat config/fileparam_GEO.dat
+
+
+
+## License
+
+Copyright (C) 2026 Thomas Fiolleau
+
+This project is licensed under the GNU General Public License v3.0 or later (GPL-3.0-or-later).
+See the LICENSE file for details.
