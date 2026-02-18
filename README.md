@@ -150,7 +150,7 @@ These parameters control temporal tracking and memory handling.
 
 - `VolumeImage` — Number of time steps processed in a single volume block.  
   - Higher values → better temporal continuity, higher memory usage  
-  - Lower values → lower memory footprint, possible edge effects  
+  - Lower values → lower memory footprint  
 
 - `overlap_window_size` — Number of time steps overlapping between successive volume blocks.  
   Ensures temporal continuity at volume boundaries.
