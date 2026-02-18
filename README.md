@@ -51,8 +51,75 @@ pip install -e .
 cd src/toocan/detection_spreading
 gcc -O3 -fPIC -shared -o label.so label.c
 
-
 ⚠️ Make sure gcc is installed on your system.
+
+
+⚙️ Configuration Files
+TOOCAN requires two configuration files:
+
+fileparam_GEOnative.dat (or equivalent)
+fileparam_TOOCAN.dat
+
+These files define:
+satellite / model parameters
+data paths
+algorithm thresholds
+runtime configuration
+
+🛰 GEO Configuration (fileparam_GEOnative.dat)
+
+This file defines the geostationary satellite characteristics and input data paths.
+Example parameters:
+- REGION — Geographic domain (e.g. AFRICA)
+- GEOplatform — Satellite platform (e.g. MSG_native)
+- temporalresolution — Temporal resolution (minutes)
+- spatialresolution — Pixel resolution (degrees)
+- channel — Infrared channel used (e.g. IR10.8)
+- nadir — Nadir longitude
+- path_ir — Path to infrared image files
+- file_navigation — Navigation file
+
+⚠️ These paths must be adapted to your local system.
+
+🌩 TOOCAN Algorithm Configuration (fileparam_TOOCAN.dat)
+
+This file defines algorithm parameters and output settings.
+- version = Version number of the TOOCAN algorithm implementation. Used for traceability and output metadata consistency.
+
+Output:
+- pathout_TOOCAN = Directory where TOOCAN outputs are written (tracking files, intermediate products).
+
+Brightness Temperature Thresholds: 
+- minBT_threshold = Minimum brightness temperature threshold (K).
+Defines the coldest threshold used to initiate segmentation.
+Lower values restrict detection to the coldest convective cores.
+- maxBT_threshold = Maximum brightness temperature threshold (K).
+Upper bound for the spreading process.
+identify the warm boundary limit of detected systems.
+- stepBT_threshold = Increment (K) between successive brightness temperature levels during segmentation.
+- deltaBT_Spread = maximum brightness temperature difference allowed between adjacent pixels for the expansion to proceed.
+
+The following parameters control initial detection of convective cores.
+
+- minAreaSeed = Minimum area (in pixels) required for a seed to be considered a valid convective cluster.
+Prevents noise or small cold artifacts from being classified as DCS.
+- minLifetime = Minimum lifetime (number of time steps) required for a system to be retained.
+Filters short-lived transient systems.
+- firstlabel = Starting label index used for cluster identification.
+Primarily used for internal tracking consistency.
+
+The Image Volume Processing parameters control temporal tracking and memory handling.
+- VolumeImage = Number of time steps processed in a single volume block.
+Higher values: better temporal continuity and higher memory usage
+Lower values: lower memory footprint and possibility of edge effects between volumes
+- overlap_window_size = Number of time steps overlapping between successive volume blocks.
+Used to ensure temporal continuity and prevent tracking discontinuities at volume boundaries.
+- nbMaxCluster = Maximum number of clusters that can be handled within a single volume. Acts as a safety limit to prevent memory overflow.
+
+
+⚠️ All These parameters directly control the detection and tracking behaviour of TOOCAN for Deep convective systems detection.
+Modifying these values may the scientific output and should be validated carefully.
+
 
 ▶️ Running TOOCAN
 PYTHONPATH=src python scripts/run_toocan.py \
