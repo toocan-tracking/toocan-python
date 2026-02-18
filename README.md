@@ -36,10 +36,10 @@ toocan-python/
 ├── config/        # Parameter files
 ├── toocan/
 │   └── detection_spreading/
-│   └── io/│ 
-│   └── postprocessing/│ 
-│   └── preprocessing/│ 
-│   └── struct/│ 
+│   └── io/
+│   └── postprocessing/
+│   └── preprocessing/ 
+│   └── struct/
 │   └── utils/
 ├── pyproject.toml
 └── README.md
