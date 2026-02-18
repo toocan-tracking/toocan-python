@@ -1,6 +1,6 @@
-🌩️ TOOCAN — Tracking Organized Deep Convection
-
-TOOCAN (Tracking Organized deep COnvection ANalysis) is a Python implementation of the algorithm used to detect, segment, and track Deep Convective Systems (DCS) using infrared brightness temperature data from geostationary satellites.
+🌩️ TOOCAN — Tracking Of Organized Convective Algorithm using 3-dimensional segmentatioN 
+ 
+TOOCAN (Tracking Of Organized Convective Algorithm using 3-dimensional segmentatioN) is a Python implementation of the algorithm used to detect, segment, and track Deep Convective Systems (DCS) using infrared brightness temperature data from geostationary satellites.
 
 This repository contains the open-source, modular implementation of TOOCAN.
 
@@ -12,18 +12,16 @@ This repository contains the open-source, modular implementation of TOOCAN.
 
 If you use TOOCAN in scientific work, please cite:
 
-📄 Fiolleau & Roca (2024)
-A database of deep convective systems derived from the intercalibrated meteorological geostationary satellite fleet and the TOOCAN algorithm (2012–2020).
-Earth Syst. Sci. Data, 16, 4021–4050.
-🔗 https://doi.org/10.5194/essd-16-4021-2024
+📄 Fiolleau, T. and R. Roca, 2013: An Algorithm for the Detection and Tracking of Tropical Mesoscale Convective Systems Using Infrared Images From Geostationary Satellite, IEEE Trans. Geosci. Remote Sens., vol. 51, no. 7, pp. 4302–4315.
+🔗 https://doi.org/10.1109/TGRS.2012.2227762
 
 📄 Fiolleau et al. (2020)
-IEEE Trans. Geosci. Remote Sens., 58(9), 6609–6622.
+Fiolleau, T., R. Roca, S. Cloché, D. Bouniol, P. Raberanto, 2020: Homogenization of geostationary infrared imager channels for cold cloud studies using Megha-Tropiques/ScaRaB. IEEE Trans. Geosci. Remote Sens., vol 58, no. 9, pp. 6609-6622. 
 🔗 https://doi.org/10.1109/TGRS.2020.2978171
 
-📄 Fiolleau & Roca (2013)
-IEEE Trans. Geosci. Remote Sens., 51(7), 4302–4315.
-🔗 https://doi.org/10.1109/TGRS.2012.2227762
+📄 Fiolleau, T. and R. Roca, 2024: A database of deep convective systems derived from the intercalibrated meteorological geostationary satellite fleet and the TOOCAN algorithm (2012–2020), Earth Syst. Sci. Data, 16, 4021–4050.
+🔗 https://doi.org/10.5194/essd-16-4021-2024
+
 
 📦 Repository Structure
 toocan-python/
