@@ -34,19 +34,16 @@ Fiolleau, T., R. Roca, S. Cloché, D. Bouniol, P. Raberanto, 2020: Homogenizatio
 ```text
 toocan-python/
 ├── config/        # Parameter files
-├── notebooks/     # Jupyter notebooks
-├── scripts/       # Command-line runners
-├── src/
-│   └── toocan/
-│       ├── main.py
-│       ├── io/
-│       ├── detection_spreading/
-│       ├── preprocessing/
-│       └── utils/
-├── tests/
+├── toocan/
+│   └── detection_spreading/
+│   └── io/│ 
+│   └── postprocessing/│ 
+│   └── preprocessing/│ 
+│   └── struct/│ 
+│   └── utils/
 ├── pyproject.toml
 └── README.md
-
+```
 ---
 
 ## ⚙️ Installation
