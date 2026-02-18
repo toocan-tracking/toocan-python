@@ -189,28 +189,10 @@ lonmin lonmax latmin latmax
 
 Contributions are welcome via GitLab Merge Requests.
 
-Workflow
-
----
-
-## 🍴 Fork the repository
-
----
-
-## 🌿 Create a feature branch
-
----
-
-## 📤 Submit a Merge Request to main
-
-
-All scientific modifications should clearly document:
-
-algorithmic changes
-
-validation strategy
-
-impact on results
+Please document:
+- Algorithmic changes
+- Validation strategy
+- Impact on results
 
 ---
 
