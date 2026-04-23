@@ -78,6 +78,7 @@ import warnings
 import ctypes
 from datetime import datetime, timedelta
 from xarray.conventions import SerializationWarning
+import xarray as xr
 #sys.path.insert(0, "/home/fiolleau/TOOCAN/pyTOOCAN")
 # Silence certains warnings xarray
 warnings.filterwarnings("ignore", category=SerializationWarning)
@@ -101,10 +102,12 @@ from toocan.lib.io.open_IRdata import extract_volume
 from toocan.lib.io.writer_toocanImage import save_labels_slot_by_slot
 from toocan.lib.io.file_listing import build_ir_filelist,fast_extract_datetime
 from toocan.lib.io.writer_navigation import save_navigation_grid
+from toocan.lib.io.write_resumption import launch_resumption
+from toocan.lib.io.compute_VZA_correction import extract_VZARegcoefs, compute_VZA_correction
 
 # ---- Detection / Spreading ----
 from toocan.lib.detection_spreading.detect_and_spread import detect_and_spread
-from toocan.lib.detection_spreading.cluster_tools import clean_clusters
+from toocan.lib.detection_spreading.cluster_tools import clean_clusters, create_clusters_reprise
 
 # ---- Structures ----
 from toocan.lib.struct.data_param import DataParam
@@ -135,10 +138,6 @@ lonmin     = float(sys.argv[13])
 lonmax     = float(sys.argv[14])
 latmin     = float(sys.argv[15])
 latmax     = float(sys.argv[16])
-
-
-
-
 
 
 
@@ -178,6 +177,9 @@ firstlabel = int(params_TOOCAN.get("firstlabel"))
 ##############
 data_param = DataParam()
 
+data_param.reprise = params_TOOCAN.get("reprise")   # if bug encountered
+data_param.date_reprise = params_TOOCAN.get("date_reprise")
+data_param.hour_reprise = params_TOOCAN.get("hour_reprise")
 
 # --- Fenêtre temporelle ---
 data_param.yearBegin = int(yearBEGIN)
@@ -220,6 +222,8 @@ data_param.labelFirstMCS = int(params_TOOCAN["firstlabel"])
 data_param.ZSIZE = int(params_TOOCAN["VolumeImage"])
 data_param.overlap_window_size = int(params_TOOCAN["overlap_window_size"])
 data_param.nbMaxCluster = int(params_TOOCAN["nbMaxCluster"])
+data_param.maxMising = int(params_TOOCAN["max_missing"])
+
 #############
 
 
@@ -236,15 +240,32 @@ for i in range(data_param.nbMaxCluster):
 params_GEO = parse_param_file(geo_param_path)
 temporalresolution = int(params_GEO.get("temporalresolution"))
 file_navigation = params_GEO.get("file_navigation")
+file_list_path = params_GEO.get("file_listGEO")
+vza_path = params_GEO.get("path_vza")
 model_name    = params_GEO.get("GEOplatform")   # ex: "ARPEGENH"
 variable_name = params_GEO.get("variable")      # ex: "BT"
 
 # === Crop Navigation File ===
 cropped_ds = crop_navigation_file(
-    file_navigation,
+    file_navigation, model_name,
     lonmin=lonmin, lonmax=lonmax,
-    latmin=latmin, latmax=latmax
+    latmin=latmin, latmax=latmax,
 )
+
+
+# Load regression coefficients alpha and beta for rapid scan
+df_dict = {}
+if model_name == 'MSGrss':
+    regression_path = params_GEO.get("path_coeffs")
+    df_file = pd.read_csv(regression_path)
+    df_dict = df_file.set_index('sat')[['alpha', 'beta', 'nuc']].to_dict('index')
+
+
+# Get VZA reg coeffs
+coefVZA_a, coefVZA_b, coefVZA_c, VZAmax, BTmax = extract_VZARegcoefs(vza_path)
+mat_coefVZA_ax, mat_coefVZA_bx, mat_coefVZA_cx = compute_VZA_correction(coefVZA_a, coefVZA_b, coefVZA_c, cropped_ds)
+VZA_coeffs = [mat_coefVZA_ax, mat_coefVZA_bx, mat_coefVZA_cx, VZAmax, BTmax]
+
 surface_area_2d = cropped_ds['mat_surfacePix'].values
 lon_array_2d = cropped_ds['mat_longitude'].values
 lat_array_2d = cropped_ds['mat_latitude'].values
@@ -269,9 +290,33 @@ data_param.YSIZE = int(lon_array_2d.shape[0])
 ## Case 2: Use dynamic directory scan
 #else:
 
+# read and filter file list netCDF
+file_list = xr.open_dataset(file_list_path)
+# file_list_time = file_list.where(
+#     (file_list["year"] >= yearBEGIN) &
+#     (file_list["year"] <= yearEND) &
+#     (file_list["month"] >= monthBEGIN) &
+#     (file_list["month"] <= monthEND),
+#     drop=True
+# )
+
 print("Building file list from path_ir...")
-file_time_pairs = build_ir_filelist(params_GEO["path_ir"],start_time,end_time)
+file_time_pairs = build_ir_filelist(params_GEO["path_ir"], start_time, end_time)
 df = pd.DataFrame(file_time_pairs, columns=["full_path", "datetime"])
+
+dates = pd.to_datetime({
+    "year": file_list["year"].values,
+    "month": file_list["month"].values,
+    "day": file_list["day"].values,
+    "hour": file_list["hour"].values,
+    "minute": file_list["minute"].values,
+})
+
+df = pd.DataFrame({
+    "full_path": file_list['path_ir'] + file_list['file_ir'],
+    "datetime": dates
+})
+# df = df[(df["datetime"] >= start_time) & (df["datetime"] <= end_time)]
 df = df.sort_values("datetime").reset_index(drop=True)
 
 # === Chunking Logic ===
@@ -309,6 +354,23 @@ current_start = start_global
 labelMin      = firstlabel
 nb_ConvSeeds  = firstlabel
 
+
+if data_param.reprise == 1:
+    global_label_volume = launch_resumption(current_start, data_param, df, temporalresolution, global_label_volume, nomenclature="ToocanCloudMask_")
+    labels_present = np.unique(global_label_volume[global_label_volume > 0])
+    nb_ConvSeeds = np.max(labels_present)
+    labelMin = np.min(labels_present)
+    clusters = create_clusters_reprise(
+        data_param,
+        clusters,
+        labels_present=labels_present,
+        labelMin=labelMin,
+        nbMax=data_param.nbMaxCluster
+    )
+    data_param.reprise = 0
+    start_global = start_global - 2 * timedelta(minutes=temporalresolution * overlap_window_size)
+
+
 while current_start < end_global:
 
     # ---------------------------------------------------------
@@ -321,6 +383,7 @@ while current_start < end_global:
         current_start - timedelta(minutes=temporalresolution * overlap_window_size),
         start_global
     )
+        
 
     post_overlap = min(
         pre_overlap + chunk_length - timedelta(minutes=temporalresolution),
@@ -358,20 +421,32 @@ while current_start < end_global:
             labelMin = labelMin - 1
             print(f"Minimum label shifted to {labelMin}")
 
+
     else:
         # First chunk: no continuity to preserve
-        global_label_volume[:] = 0    
+        global_label_volume = np.zeros((timesteps_per_chunk, lat_size, lon_size), dtype=np.int32)       # redefine size of volume after cut
+
+        # Allocation des buffers pour CHAQUE blob
+        clusters = ClustersArray()
+        for i in range(data_param.nbMaxCluster):
+            clusters[i].seed_area_perFrame = (ctypes.c_int * data_param.ZSIZE)()
+            clusters[i].labelVoisin       = (ctypes.c_int * 1000)()
 
     # ---------------------------------------------------------
     # 3) Extract 3D IR brightness temperature volume
     # ---------------------------------------------------------
-    volume_BT, times, lat, lon = extract_volume(
-        df, pre_overlap, post_overlap,nav=cropped_ds,
+    volume_BT, times, lat, lon, flag_cut, next_date = extract_volume(
+        df, pre_overlap, post_overlap, file_list, vza_path, data_param.maxMising, df_dict, VZA_coeffs, nav=cropped_ds,
         model_name=model_name
     )
 
     T_actual = volume_BT.shape[0]
     T_full   = data_param.ZSIZE
+    missing = 0
+
+    print("T_actual", T_actual)
+    print("T_full", T_full)
+    print("shape global_label_volume", global_label_volume.shape)
 
     # ---------------------------------------------------------
     # 4) Determine chunk type (normal / last / missing data)
@@ -391,50 +466,72 @@ while current_start < end_global:
         else:
             # Missing IR images inside the dataset (unexpected)
             missing = T_full - T_actual
+            if missing < 0:
+                exit()
             print("⚠️ WARNING: Incomplete chunk BEFORE reaching end of period")
             print(f"    → {missing} missing IR image(s)")
             print(f"    pre_overlap  = {pre_overlap}")
             print(f"    post_overlap = {post_overlap}")
             print(f"    end_global   = {end_global}")
+            global_label_volume = global_label_volume[:T_actual, :, :]
 
             # strict mode — stop processing
-            sys.exit("ERROR: Missing IR slot inside a non-terminal chunk.")
+            # sys.exit("ERROR: Missing IR slot inside a non-terminal chunk.")
 
     # Final safety check
-    if volume_BT.shape != global_label_volume.shape:
-        print("❌ ERROR: Shape mismatch after dimensional adjustment.")
-        print("volume_BT:          ", volume_BT.shape)
-        print("global_label_volume:", global_label_volume.shape)
-        sys.exit(1)
+    # if volume_BT.shape != global_label_volume.shape:
+    #     print("❌ ERROR: Shape mismatch after dimensional adjustment.")
+    #     print("volume_BT:          ", volume_BT.shape)
+    #     print("global_label_volume:", global_label_volume.shape)
+    #     sys.exit(1)
 
     # ---------------------------------------------------------
     # 5) Run detection + spatial-temporal spreading
     # ---------------------------------------------------------
-    global_label_volume,nb_ConvSeeds = detect_and_spread(
-        data_param,
-        clusters,
-        volume_BT,
-        surface_area_2d,
-        lon_array_2d,
-        lat_array_2d,
-        global_label_volume,
-        params_TOOCAN,
-        nb_ConvSeeds,
-        labelMin
-    )
+    
+    if missing < data_param.ZSIZE - data_param.lifemin:
+        global_label_volume,nb_ConvSeeds = detect_and_spread(
+            data_param,
+            clusters,
+            volume_BT,
+            surface_area_2d,
+            lon_array_2d,
+            lat_array_2d,
+            global_label_volume,
+            params_TOOCAN,
+            nb_ConvSeeds,
+            labelMin
+        )
 
 
-    # ---------------------------------------------------------
-    # 6) Save output cloud labels for this chunk
-    # ---------------------------------------------------------
-    save_labels_slot_by_slot(
-        global_label_volume, times, lat, lon,
-        nomenclature="ToocanCloudMask_",
-        var_name="DCS_number",
-        params_TOOCAN=params_TOOCAN, params_GEO=params_GEO
-    )
-  
+        # ---------------------------------------------------------
+        # 6) Save output cloud labels for this chunk
+        # ---------------------------------------------------------
+        save_labels_slot_by_slot(
+            global_label_volume, times, lat, lon,
+            nomenclature="ToocanCloudMask_",
+            var_name="DCS_number",
+            params_TOOCAN=params_TOOCAN, params_GEO=params_GEO
+        )
+
+
+    
     # ---------------------------------------------------------
     # 7) Move to next temporal window
     # ---------------------------------------------------------
-    current_start = post_overlap + timedelta(minutes=temporalresolution)
+    
+    if flag_cut:
+        current_start = pd.Timestamp(next_date, unit="ns")
+        labelMin = nb_ConvSeeds
+        start_global = current_start
+        overlap_window_size = 0
+        data_param.overlap_window_size = 0
+    else:
+        current_start = post_overlap + timedelta(minutes=temporalresolution)
+        overlap_window_size = int(params_TOOCAN.get("overlap_window_size"))
+        data_param.overlap_window_size = int(params_TOOCAN["overlap_window_size"])
+    data_param.ZSIZE = int(params_TOOCAN["VolumeImage"])
+
+
+
+

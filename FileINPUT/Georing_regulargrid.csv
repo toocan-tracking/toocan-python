@@ -1,0 +1,12 @@
+  Date 	     , slot, region , Satellite , Production_name , num_sat, nadir, resolution , canal , Xsize, Ysize, version , FileNavigation , Path_IR , Format , extension , Flag_DegEst0 , BC1 , BC2 , nbonde, changenavig , time_offset, calibration , changenavig
+  1981/07/01 , 01 , AFRICA , METEOSAT , MVIRI , 2 , 0 , 3 , IR115 , 2751 , 2751 , 1.1 , /DATABASE/geostationary/GRID004.v1.00/AFRICA/navig_AFRICA-1999_0.0.nc , /DATABASE/geostationary/GRID004.v1.00/AFRICA/ , NETCDF , .nc , 0 , 0.640 , 0.9983 , 931.7 , 0 , Operational , 0
+  2004/01/19 , 20 , AFRICA , MSG , SEVIRI , 2 , 0 , 3 , IR108 , 2751 , 2751 , 1.1 , /DATABASE/geostationary/GRID004.v1.00/AFRICA/navig_AFRICA-2020_0.0.nc , /DATABASE/geostationary/GRID004.v1.00/AFRICA/ , NETCDF , .nc , 0 , 0.640 , 0.9983 , 931.7 , 0 , Operational , 1
+  2024/01/19 , 20 , AFRICA , MTG , SEVIRI , 2 , 0 , 3 , IR108 , 2751 , 2751 , 1.1 , /DATABASE/geostationary/GRID004.v1.00/AFRICA/navig_AFRICA-2020_0.0.nc , /DATABASE/geostationary/GRID004.v1.00/AFRICA/ , NETCDF , .nc , 0 , 0.640 , 0.9983 , 931.7 , 0 , Operational , 1
+
+
+
+  1998/06/01 , 01 , INDIA , METEOSAT , MVIRI , 2 , 63 , 5 , IR115 , 1926 , 2751 , 1.1 , /DATABASE/geostationary/GRID004.v1.00/INDIA/navig_INDIA-1999_63.0.nc , /DATABASE/geostationary/GRID004.v1.00/INDIA/ , NETCDF , .nc , 0 , 0.640 , 0.9983 , 931.7 , 0 , Operational , 0
+  2006/07/01 , 01 , INDIA , METEOSAT , MVIRI , 2 , 57 , 5 , IR115 , 1926 , 2751 , 1.1 , /DATABASE/geostationary/GRID004.v1.00/INDIA/navig_INDIA-2007_57.0.nc , /DATABASE/geostationary/GRID004.v1.00/INDIA/ , NETCDF , .nc , 0 , 0.640 , 0.9983 , 931.7 , 0 , Operational , 1
+  2017/03/01 , 01 , INDIA , MSG , SEVIRI , 2 , 41.5 , 3 , IR108 , 1926 , 2751 , 1.1 , /DATABASE/geostationary/GRID004.v1.00/INDIA/navig_INDIA-2022_41.5.nc , /DATABASE/geostationary/GRID004.v1.00/INDIA/ , NETCDF , .nc , 0 , 0.640 , 0.9983 , 931.7 , 0 , Operational , 1
+  2022/06/01 , 19 , INDIA , MSG , SEVIRI , 2 , 45.5 , 3 , IR108 , 1926 , 2751 , 1.1 , /DATABASE/geostationary/GRID004.v1.00/INDIA/navig_INDIA-2022_45.5.nc , /DATABASE/geostationary/GRID004.v1.00/INDIA/ , NETCDF , .nc , 0 , 0.640 , 0.9983 , 931.7 , 0 , Operational , 1
+  2025/01/19 , 20 , INDIA , MTG , SEVIRI , 2 , 45.5 , 3 , IR108 , 1926 , 2751 , 1.1 , /DATABASE/geostationary/GRID004.v1.00/INDIA/navig_INDIA-2022_45.5.nc , /DATABASE/geostationary/GRID004.v1.00/INDIA/ , NETCDF , .nc , 0 , 0.640 , 0.9983 , 931.7 , 0 , Operational , 1

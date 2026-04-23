@@ -795,13 +795,14 @@ int Label_region(data_param data_param,Blob *p,float *imIR,int *imlabel,signed c
 			  		continue;
 			  }
 
+
 			  //
 			  //If no naighbored pixels labelled then incrementation of the label_object and attribution to the current pixel 
 			  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			  if(Nb_pixNeighbors == 0)
 			  {    
 				number ++;	
-				label_object   = number; 				
+				label_object   = number; 			
 				imlabel[i] = number;
                 //printf("AA: %d %d %d %d %d %d %d \n",NSEEDS,labelMin,*nbPix_ConvSeed,Nb_pixNeighbors,number,label_object,label_object-1-labelMin);
 
@@ -809,9 +810,11 @@ int Label_region(data_param data_param,Blob *p,float *imIR,int *imlabel,signed c
 				{
 					printf("DEPASSEMENT DU NOMBRE DE CLUSTERS SEGMENTES AUTORISE PAR LE PROGRAMME %d %d %d %d %d\n",
 					       NBMAX_LABEL_OBJECTS, data_param.nbMaxCluster, label_object,
-					       label_object - 1 - labelMin, labelMin);				   
+					       label_object - 1 - labelMin, labelMin);	
+					fflush(stdout);			   
 					exit(0);
 				}
+
 				
 				//
 				ptr_seed[label_object-1-labelMin].imin = i;
@@ -857,6 +860,7 @@ int Label_region(data_param data_param,Blob *p,float *imIR,int *imlabel,signed c
 					 }   
 				  }
 			  }
+
 			//printf("B: %d %d\n",NSEEDS,labelMin);
 
  			  // 
@@ -971,6 +975,8 @@ int Label_region(data_param data_param,Blob *p,float *imIR,int *imlabel,signed c
 	      if(imlabel[i] > 0)
 	      {
 
+		if( ptr_seed[imlabel[i] -1-labelMin].flagFIX != 1)
+		{	
 				Z =  i / (data_param.XSIZE*data_param.YSIZE);
 				Y = (i - (data_param.XSIZE*data_param.YSIZE)*Z) / data_param.XSIZE;
 				X = (i - (data_param.XSIZE*data_param.YSIZE)*Z) % data_param.XSIZE;
@@ -996,10 +1002,9 @@ int Label_region(data_param data_param,Blob *p,float *imIR,int *imlabel,signed c
 				if(Z > ptr_seed[imlabel[i] -1-labelMin].slotEnd)   {ptr_seed[imlabel[i] -1-labelMin].slotEnd = Z;}
 //				printf("C %d %d %d %d %d \n",imlabel[i],labelMin,imlabel[i] -1-labelMin,Z,X+Y*data_param.XSIZE);
 
-			//}	      
-			}
+			}	      
+		}
 	}
-
 
 	//
     // Identification of the MCS overpassing the criteria

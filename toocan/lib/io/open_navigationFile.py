@@ -82,7 +82,7 @@ def crop_navigation_file_v0(file_path, lonmin=0, lonmax=20, latmin=-5, latmax=15
 import xarray as xr
 import numpy as np
 
-def crop_navigation_file(navfile, lonmin, lonmax, latmin, latmax):
+def crop_navigation_file(navfile, model_name, lonmin, lonmax, latmin, latmax):
     """
     Crop navigation using ONLY min/max indices.
     Returns an xr.Dataset with:
@@ -93,6 +93,9 @@ def crop_navigation_file(navfile, lonmin, lonmax, latmin, latmax):
     """
 
     ds = xr.open_dataset(navfile)
+    
+    if model_name == "MSGrss":    # flip vertically
+        ds = ds.reindex(y=ds.y[::-1])
 
     # ------------------------------------------
     # 1) Identify latitude / longitude variables
@@ -124,6 +127,8 @@ def crop_navigation_file(navfile, lonmin, lonmax, latmin, latmax):
             area = ds[key].values
             break
 
+    VZA = ds.mat_ZenithalAngle.values
+
     # ------------------------------------------
     # 2) Case A : regular grid  lat(y), lon(x)
     # ------------------------------------------
@@ -145,6 +150,7 @@ def crop_navigation_file(navfile, lonmin, lonmax, latmin, latmax):
             area = np.ones_like(LAT)
         else:
             area = area[ymin:ymax+1, xmin:xmax+1]
+        VZA = VZA[ymin:ymax+1, xmin:xmax+1]
 
     # ------------------------------------------
     # 3) Case B : 2D grid lat(y,x), lon(y,x)
@@ -171,6 +177,7 @@ def crop_navigation_file(navfile, lonmin, lonmax, latmin, latmax):
             area = np.ones_like(LAT)
         else:
             area = area[ymin:ymax+1, xmin:xmax+1]
+        VZA = VZA[ymin:ymax+1, xmin:xmax+1]
 
     else:
         raise ValueError("Unsupported navigation format")
@@ -183,6 +190,7 @@ def crop_navigation_file(navfile, lonmin, lonmax, latmin, latmax):
             "mat_latitude":   (("y", "x"), LAT),
             "mat_longitude":  (("y", "x"), LON),
             "mat_surfacePix": (("y", "x"), area),
+            "mat_ZenithalAngle": (("y", "x"), VZA),
         },
         coords={
             "xmin": int(xmin),

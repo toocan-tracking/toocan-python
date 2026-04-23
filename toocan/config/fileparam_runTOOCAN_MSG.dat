@@ -25,8 +25,8 @@ latmax  	    =       73
 version = 2.08
 
 ;################## PathOUT and fileINPUTS   #####################
-pathout_TOOCAN  =  /DATABASE/TOOCAN/TOOCAN_v2.08_MSGrss/
-file_list = /home/jbounan/toocan-python/FileINPUT/new_total_file_list_20090101-20091231_v2.08_5min_v3.nc
+pathout_TOOCAN  =  /DATABASE/TOOCAN/TOOCAN_v2.08/
+file_list = /home/jbounan/toocan-python/FileINPUT/file_list_19810101-20231231_v2.08_30min_v3.csv
 
 
 ;################## Parameters of the TOOCAN algorithm   #####################
@@ -50,7 +50,7 @@ nbMaxCluster        = 600000
 
 ;################################### Temporal resoltion of  the Geo used for the process###################################################
 ;Temporal  resolution
-temporalresolution = 5
+temporalresolution = 30
 
 ; If bug encountered
 reprise = 0

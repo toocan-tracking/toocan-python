@@ -58,7 +58,7 @@ def detect_and_spread(
     deltaBT_Spread = int(params_TOOCAN.get("deltaBT_Spread", 1))
 
     nCluster = 0
- 
+
     print("Min/Max BT:", np.nanmin(volume_bt), np.nanmax(volume_bt))
 
 
@@ -66,9 +66,12 @@ def detect_and_spread(
         threshold_next = min(threshold + stepBT_threshold, maxBT_threshold)
 
         print(f"\n>>> Threshold {threshold}K - Next {threshold_next}K")
+        # param_clusters = list_clusters(global_label_volume)
 
         # --- Step 1 : Re-expanding existing objects... ---
         mask = (volume_bt < threshold).astype(np.uint8)
+        # list_clusters(global_label_volume)
+
         global_label_volume = spread_labels_fast(
             volume_bt=volume_bt,
             labeled_volume=global_label_volume,
@@ -76,15 +79,16 @@ def detect_and_spread(
             delta_spread=deltaBT_Spread
         )
 
-        
+
         global_label_volume_tmp = global_label_volume.copy()
+        # list_clusters(global_label_volume)
 
         # --- Step 2 : Detection of new conv seeds ---
         global_label_volume,nb_ConvSeeds = detect_objects(data_param,clusters,volume_bt,surface_area_2d,global_label_volume,threshold,area_threshold_km2,kernel,nb_ConvSeeds,labelMin )
 
         global_label_volume_tmp =  global_label_volume - global_label_volume_tmp
 
-        param_clusters = list_clusters(global_label_volume)
+        # param_clusters = list_clusters(global_label_volume)
 
         # --- step 3 : Dilation of conv seeds up to intermediate boundaries ---
         print("  Expanding with next threshold...",np.shape(global_label_volume),np.nanmax(global_label_volume))
@@ -95,6 +99,8 @@ def detect_and_spread(
             cloud_mask=mask,
             delta_spread=deltaBT_Spread
         )
+
+        # list_clusters(global_label_volume)
 
         #clusters = list_clusters(global_label_volume)
 

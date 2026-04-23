@@ -4,15 +4,15 @@
 
 ;############################################ GEO/Model parameters  ##########################################
 REGION  	              = EUROPE
-GEOplatform               = MSGrss
-temporalresolution        = 5
+GEOplatform               = MSG
+temporalresolution        = 30
 spatialresolution         = 0.04
 channel                   = IR10.8
 
 nadir                     = 0.0
 
-path_ir            = /MSGrss/
-file_navigation    = /DATABASE/geostationary/navigation/Geonavigation_METEOSAT_rss.nc
-file_listGEO       = /home/jbounan/toocan-python/FileINPUT/total_file_list_20080101-20241231_v2.08_05min_v3.nc
-path_vza           = /DATABASE/geostationary/vza/VZA_RegCoefs_SEVIRI.nc
-path_coeffs        = /home/jbounan/toocan-python/FileINPUT/regression_coefficients_MSGrss.csv
+path_ir            = /DATABASE/geostationary/GRID004.v1.00/AFRICA/*
+file_navigation    = /DATABASE/geostationary/GRID004.v1.00/AFRICA/navig_AFRICA-1981_0.0.nc
+file_listGEO       = /home/jbounan/toocan-python/FileINPUT/file_list_19810101-20231231_v2.08_30min_v3.nc
+path_vza           = /DATABASE/geostationary/vza/VZA_RegCoefs_MVIRI.nc
+

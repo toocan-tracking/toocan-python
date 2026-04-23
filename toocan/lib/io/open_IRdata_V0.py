@@ -52,7 +52,7 @@ def read_msg_irbt(filepath, lonmin, lonmax, latmin, latmax):
 
     ds = xr.open_dataset(filepath)
 
-    da = ds["Harmonized_irBT"].isel(time=0).astype(np.float32)
+    da = ds["brighness_temperature"].isel(time=0).astype(np.float32)       # or Harmonized_irBT with correction or irBT without correction
 
     da = crop_latlon_fast(da, "latitude", "longitude",
                           latmin, latmax, lonmin, lonmax)

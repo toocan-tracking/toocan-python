@@ -1,0 +1,9 @@
+region              = AFRICA
+lonmin              = -55
+lonmax              = 55
+latmin              = -40
+latmax              = 40
+path_OUT            = /bdd/MT_WORKSPACE/MCS/TOOCAN/
+path_imagesgeo      = /DATABASE/geostationary/GRID004.v1.00/AFRICA/*
+nomenclature_image  = GEO_L1C-
+reso_tempo          = 30

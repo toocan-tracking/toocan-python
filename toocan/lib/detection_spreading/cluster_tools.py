@@ -44,3 +44,27 @@ def clean_clusters(data_param, clusters, labels_present, labelMin, nbMax):
 
 
     return new
+
+
+def create_clusters_reprise(data_param, clusters, labels_present, labelMin, nbMax):
+    """
+    Reorganizes clusters so that:
+        new[label - labelMin] = cluster
+    Empty slots are initialized with empty Blob(), equivalent to calloc().
+    """
+
+    # Place each cluster at correct index
+    for label in sorted(labels_present):
+        index = label - labelMin
+        if 0 <= index < nbMax:
+            clusters[index].label = label
+            clusters[index].flagFIX = 1
+            clusters[index].seed_duration = data_param.lifemin + 1
+            clusters[index].seed_area = data_param.timin * data_param.lifemin
+            for i in range (1000):
+                clusters[index].labelVoisin[i] = -999
+            for i in range (data_param.ZSIZE):
+                clusters[index].seed_area_perFrame[i] = data_param.timin + 1
+
+
+    return clusters

@@ -229,10 +229,10 @@ def build_ir_filelist(path_ir, start_time, end_time):
     file_time_pairs = []
 
     # 1) Gather all candidate NetCDF files
-    patterns = ["Mmultic3kmNC4_msg04_*.nc", "*.nc4", "*.nc.gz", "*.nc4.gz"]
+    patterns = ["GEO_L1C-*.nc", "*.nc4", "*.nc.gz", "*.nc4.gz"]
     files = []
     for pat in patterns:
-        files.extend(glob.glob(os.path.join(path_ir, "**", pat), recursive=True))
+        files.extend(glob.glob(os.path.join(path_ir, pat), recursive=True))
 
     print(f"Found {len(files)} files under {path_ir}")
 

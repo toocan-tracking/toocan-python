@@ -277,6 +277,8 @@ def save_labels_slot_by_slot(
     # ---------------------------------------------------------------------
     if platform == "MSG_native":
         grid_type = "MSG_NATIVE"
+    elif platform == "MSGrss":
+        grid_type = "MSG_RSS"
     elif lat_array.ndim == 1 and lon_array.ndim == 1:
         grid_type = "REGULAR"
     elif lat_array.ndim == 2 and lon_array.ndim == 2:
@@ -314,7 +316,7 @@ def save_labels_slot_by_slot(
         # =================================================================
         # CASE 1 — MSG_NATIVE → Only (time,y,x)
         # =================================================================
-        if grid_type == "MSG_NATIVE":
+        if grid_type == "MSG_NATIVE" or grid_type == "MSG_RSS":
             da = xr.DataArray(
                 data[np.newaxis, :, :],
                 dims=("time", "y", "x"),
@@ -424,5 +426,14 @@ def save_labels_slot_by_slot(
             "version": version
         })
 
-        ds.to_netcdf(fpath, unlimited_dims=["time"])
+        encoding = {
+            var: {
+                "zlib": True,
+                "complevel": 4,
+                "shuffle": True
+            }
+            for var in ds.data_vars
+        }
+
+        ds.to_netcdf(fpath, encoding=encoding, unlimited_dims=["time"])
         print(f"✔ Saved {fpath}")

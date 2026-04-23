@@ -236,6 +236,7 @@ def detect_objects(
     ptr_clusters = ctypes.cast(clusters, ctypes.c_void_p)
 
     # --- Call C routine ---
+    
     nb_ConvSeeds = liblabel.Label_region(
         data_param,
         ptr_clusters,
