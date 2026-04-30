@@ -53,4 +53,4 @@ nbMaxCluster        = 600000
 temporalresolution = 5
 
 ; If bug encountered
-reprise = 0
+reprise = 1

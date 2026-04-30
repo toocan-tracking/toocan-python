@@ -2,7 +2,7 @@
 
 TOOCAN (Tracking Organized deep COnvection ANalysis) is a Python implementation of the algorithm used to detect, segment, and track deep convective systems (DCS) using infrared brightness temperature data from geostationary satellites.
 
-This repository contains the open-source, modular version of TOOCAN.
+This repository contains the open-source, modular version of TOOCAN for GEO observational data (native or regridded), including the MSG rapid scan service covering Europe.
 ---
 
 ## 🌐 Website and References
@@ -34,9 +34,14 @@ pyTOOCAN/
 └── README.md
 
 ## ▶️ How to Run
+Preprocessing stage to produce a NetCDF file that indicates which GEO files exist, which do not, and includes their respective file paths:
 ```bash
-PYTHONPATH=src python scripts/run_toocan.py config/fileparam_TOOCAN.dat config/fileparam_GEO.dat
+PYTHONPATH=src python scripts/run_toocan.py config/params_launch_toocan.dat yearEnd monthEnd dayEnd minuteEnd yearBegin monthBegin dayBegin minuteBegin outputPath
+```
 
+Launch TOOCAN
+```bash
+PYTHONPATH=src python config/fileparam_TOOCAN.dat config/fileparam_GEO.dat yearBegin monthBegin dayBegin yearEnd monthEnd dayEnd lonMin lonMax latMin latMax
 
 
 ## License

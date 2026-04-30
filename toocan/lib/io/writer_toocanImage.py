@@ -379,8 +379,8 @@ def save_labels_slot_by_slot(
                 dims=("time", "y", "x"),
                 coords={
                     "time": [epoch_sec],
-                    "latitude":  (("y","x"), lat_array),
-                    "longitude": (("y","x"), lon_array),
+                    "latitude":  (("y","x"), lat_array.astype(np.float32)),
+                    "longitude": (("y","x"), lon_array.astype(np.float32)),
                 },
                 name=var_name,
                 attrs={
@@ -425,6 +425,7 @@ def save_labels_slot_by_slot(
             "grid_resolution_in_degrees": res_deg,
             "version": version
         })
+
 
         encoding = {
             var: {

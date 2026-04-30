@@ -5,6 +5,32 @@ from datetime import datetime, timedelta
 
 
 def launch_resumption(current_start, data_param, df, temporalresolution, global_label_volume, nomenclature="ToocanCloudMask_"):
+    """
+   Resume a processing run using overlap data.
+
+    Load previous time steps within the overlap window, read corresponding NetCDF
+    files, and update the global label volume accordingly.
+
+    Parameters
+    ----------
+    current_start : datetime
+        Start time of the current run.
+    data_param : object
+        Configuration object containing paths and processing parameters.
+    df : pandas.DataFrame
+        DataFrame containing at least 'datetime' and 'full_path' columns.
+    temporalresolution : int
+        Temporal resolution in minutes.
+    global_label_volume : ndarray
+        Array to be filled with retrieved labels.
+    nomenclature : str, optional
+        File name prefix, by default "ToocanCloudMask_"
+
+    Returns
+    -------
+    ndarray
+        Updated global label volume.
+    """
     dates = df[(df["datetime"] >= current_start - timedelta(minutes=data_param.overlap_window_size * temporalresolution)) & (df["datetime"] < current_start)]
     for i in range(data_param.overlap_window_size):
         date = dates["datetime"].values[i]

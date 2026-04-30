@@ -1,41 +1,20 @@
 import xarray as xr
 import numpy as np
 
-def extract_globalvariablesVZAcorrection(filename):
-    """
-    Extrait les variables globales VZAmax et BTmax d'un fichier NetCDF.
-
-    Args:
-        filename (str): Chemin vers le fichier NetCDF.
-
-    Returns:
-        tuple: (nb_VZAcoefs, VZAmax, BTmax)
-    """
-    coeff_ds = xr.open_dataset(filename)
-    # Récupération des attributs globaux
-    
-
-    # Récupération du nombre de coefficients via la dimension "rangeVZA"
-    # nb_VZAcoefs = len(coeff_ds.dimensions["rangeVZA"])
-
-    coeff_ds.close()
-
-    return BTmax, VZAmax
-
 def extract_VZARegcoefs(filename):
     """
-    Extrait les coefficients a, b, c pour la correction VZA d'un fichier NetCDF.
+    Extract the a, b, c coefficients for VZA correction from a NetCDF file.
 
     Args:
-        filename (str): Chemin vers le fichier NetCDF.
-        nb_VZAcoefs (int): Nombre de coefficients à extraire.
+        filename (str): Path to the NetCDF file.
+        nb_VZAcoefs (int): Number of coefficients to extract.
 
     Returns:
         tuple: (coefVZA_a, coefVZA_b, coefVZA_c)
     """
     dataset = xr.open_dataset(filename)
 
-    # Récupération des variables
+    # Variable retrieval
     coefVZA_a = dataset.variables["coef_a"]
     coefVZA_b = dataset.variables["coef_b"]
     coefVZA_c = dataset.variables["coef_c"]

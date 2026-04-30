@@ -102,7 +102,7 @@ from toocan.lib.io.open_IRdata import extract_volume
 from toocan.lib.io.writer_toocanImage import save_labels_slot_by_slot
 from toocan.lib.io.file_listing import build_ir_filelist,fast_extract_datetime
 from toocan.lib.io.writer_navigation import save_navigation_grid
-from toocan.lib.io.write_resumption import launch_resumption
+from toocan.lib.io.lauch_resumption import launch_resumption
 from toocan.lib.io.compute_VZA_correction import extract_VZARegcoefs, compute_VZA_correction
 
 # ---- Detection / Spreading ----
@@ -181,7 +181,7 @@ data_param.reprise = params_TOOCAN.get("reprise")   # if bug encountered
 data_param.date_reprise = params_TOOCAN.get("date_reprise")
 data_param.hour_reprise = params_TOOCAN.get("hour_reprise")
 
-# --- Fenêtre temporelle ---
+# --- Time window ---
 data_param.yearBegin = int(yearBEGIN)
 data_param.monthBegin = int(monthBEGIN)
 data_param.dayBegin = int(dayBEGIN)
@@ -194,24 +194,24 @@ data_param.dayEnd = int(dayEND)
 data_param.hourEnd = int(hourEND)
 data_param.minEnd = int(minEND)
 
-# --- Domaine ---
+# --- Domain ---
 data_param.latmin = float(latmin)
 data_param.latmax = float(latmax)
 data_param.lonmin = float(lonmin)
 data_param.lonmax = float(lonmax)
 
 
-# --- Métadonnées ---
+# --- Metadata ---
 data_param.version = bytes(str(params_TOOCAN.get("version", "")), "utf-8")
 data_param.path_out = bytes(str(params_TOOCAN.get("pathout_TOOCAN", "")), "utf-8")
 data_param.path_fileIN = bytes(str(params_TOOCAN.get("file_list", "")), "utf-8")
 
-# --- Seuils BT ---
+# --- BT Thresholds---
 data_param.minBT = int(params_TOOCAN["minBT_threshold"])
 data_param.maxBT = int(params_TOOCAN["maxBT_threshold"])
 data_param.stepBT = int(params_TOOCAN["stepBT_threshold"])
 
-# --- Paramètres ---
+# --- Parametres ---
 data_param.deltaDetect = float(params_TOOCAN.get("deltaDetect", 1.0))
 data_param.deltaSpread = float(params_TOOCAN.get("deltaSpread", 1.0))
 
@@ -227,11 +227,11 @@ data_param.maxMising = int(params_TOOCAN["max_missing"])
 #############
 
 
-# création de la classe cluster
+# clusters class creation
 Blob = make_Blob_class()
 ClustersArray = Blob * data_param.nbMaxCluster
 clusters = ClustersArray()      
-# Allocation des buffers pour CHAQUE blob
+# Allocate buffers for EACH blob
 for i in range(data_param.nbMaxCluster):
     clusters[i].seed_area_perFrame = (ctypes.c_int * data_param.ZSIZE)()
     clusters[i].labelVoisin       = (ctypes.c_int * 1000)()
@@ -261,6 +261,7 @@ if model_name == 'MSGrss':
     df_dict = df_file.set_index('sat')[['alpha', 'beta', 'nuc']].to_dict('index')
 
 
+# Computing VZA correction
 # Get VZA reg coeffs
 coefVZA_a, coefVZA_b, coefVZA_c, VZAmax, BTmax = extract_VZARegcoefs(vza_path)
 mat_coefVZA_ax, mat_coefVZA_bx, mat_coefVZA_cx = compute_VZA_correction(coefVZA_a, coefVZA_b, coefVZA_c, cropped_ds)
@@ -276,7 +277,7 @@ nav_file = save_navigation_grid(cropped_ds, params_TOOCAN, params_GEO, "navigati
 
 
 
-# Après crop navigation :
+# After crop navigation :
 data_param.XSIZE = int(lon_array_2d.shape[1])
 data_param.YSIZE = int(lon_array_2d.shape[0])
 
@@ -292,17 +293,8 @@ data_param.YSIZE = int(lon_array_2d.shape[0])
 
 # read and filter file list netCDF
 file_list = xr.open_dataset(file_list_path)
-# file_list_time = file_list.where(
-#     (file_list["year"] >= yearBEGIN) &
-#     (file_list["year"] <= yearEND) &
-#     (file_list["month"] >= monthBEGIN) &
-#     (file_list["month"] <= monthEND),
-#     drop=True
-# )
 
 print("Building file list from path_ir...")
-file_time_pairs = build_ir_filelist(params_GEO["path_ir"], start_time, end_time)
-df = pd.DataFrame(file_time_pairs, columns=["full_path", "datetime"])
 
 dates = pd.to_datetime({
     "year": file_list["year"].values,
@@ -316,7 +308,6 @@ df = pd.DataFrame({
     "full_path": file_list['path_ir'] + file_list['file_ir'],
     "datetime": dates
 })
-# df = df[(df["datetime"] >= start_time) & (df["datetime"] <= end_time)]
 df = df.sort_values("datetime").reset_index(drop=True)
 
 # === Chunking Logic ===
@@ -354,7 +345,7 @@ current_start = start_global
 labelMin      = firstlabel
 nb_ConvSeeds  = firstlabel
 
-
+# If resuming a run, retrieve the last overlap_window_size TOOCAN outputs and update clusters
 if data_param.reprise == 1:
     global_label_volume = launch_resumption(current_start, data_param, df, temporalresolution, global_label_volume, nomenclature="ToocanCloudMask_")
     labels_present = np.unique(global_label_volume[global_label_volume > 0])

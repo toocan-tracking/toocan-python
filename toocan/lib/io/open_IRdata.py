@@ -129,8 +129,8 @@ def read_msg_irbt(filepath, nav, vza_path, VZA_coeffs, model_name=None):
 
     return dict(
         irbt=irbt.astype(np.float32),
-        lat=nav["mat_latitude"].values,
-        lon=nav["mat_longitude"].values,
+        lat=nav["mat_latitude"].values[:, 0],
+        lon=nav["mat_latitude"].values[0, :],
         time=t
     )
 
@@ -455,4 +455,4 @@ def extract_volume(df, start_time, end_time, file_list_time, vza_path, maxMissin
 
     volume = np.stack(volume_list, axis=0)
 
-    return volume, time_list, nav["mat_latitude"].values, nav["mat_longitude"].values, flag_cut, next_date
+    return volume, time_list, r["lat"], r["lon"], flag_cut, next_date
