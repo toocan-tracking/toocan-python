@@ -1,7 +1,6 @@
 # TOOCAN - Tracking Organized Deep Convection
 
 TOOCAN (Tracking Organized deep COnvection ANalysis) is a Python implementation of the algorithm used to detect, segment, and track deep convective systems (DCS) using infrared brightness temperature data from geostationary satellites.
-
 This repository contains the open-source, modular version of TOOCAN for GEO observational data (native or regridded), including the MSG rapid scan service covering Europe.
 ---
 
