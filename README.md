@@ -48,6 +48,7 @@ This branch introduces fault tolerance with a possibility to resume after crash 
 It preserves the cluster IDs and temporal continuity.
 
 ## 📦 Structure
+```
 pyTOOCAN/
 ├── config/   # Parameter files
 ├── toocan/
@@ -59,6 +60,7 @@ pyTOOCAN/
 │ └── utils/
 ├── tests/
 └── README.md
+```
 
 ## ▶️ How to Run
 Preprocessing stage to produce a NetCDF file that indicates which GEO files exist, which do not, and includes their respective file paths:
@@ -76,6 +78,7 @@ PYTHONPATH=src python config/fileparam_TOOCAN.dat config/fileparam_GEO.dat yearB
 If execution stops:
 
 Switch parameter `reprise` in `fileparam_TOOCAN.dat` to 1.
+
 ➡️ Simply relaunch the same command with the new date.
 
 
