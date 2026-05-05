@@ -2,7 +2,7 @@
 
 **Tracking Of Organized Convective Algorithm using 3-dimensional segmentatioN**
 
-TOOCAN (Tracking Of Organized Convective Algorithm using 3-dimensional segmentatioN) is a Python implementation of the algorithm used to detect, segment, and track Deep Convective Systems (DCS) using infrared brightness temperature data from geostationary satellites.
+TOOCAN (Tracking Of Organized Convective Algorithm using 3-dimensional segmentatioN) is a Python implementation of the algorithm used to detect, segment, and track Deep Convective Systems (DCS) using infrared brightness temperature data from geostationary satellites. This branch introduces new tracking capabilities and preprocessing while remaining scientifically consistent with the reference TOOCAN methodology.
 
 This repository contains the open-source, modular implementation of TOOCAN.
 
@@ -21,15 +21,39 @@ This repository contains the open-source, modular implementation of TOOCAN.
   Fiolleau, T. and R. Roca, 2013: An Algorithm for the Detection and Tracking of Tropical Mesoscale Convective Systems Using Infrared Images From Geostationary Satellite, IEEE Trans. Geosci. Remote Sens., vol. 51, no. 7, pp. 4302–4315. doi: 10.1109/TGRS.2012.2227762
 
 
+## 🚀 What’s New in TOOCAN-Next
+
+### 🛰️ 1. MCS Tracking
+
+Compatibility with:
+Standard geostationary data (30 min resolution)
+Rapid-scan service observations on Europe (high temporal resolution)
+
+### 📂 2. File Inventory System (Filelist.nc)
+
+A new preprocessing step generates:
+
+`FileList.nc`
+
+This file provides a complete inventory of input satellite data, including:
+- Available files
+- File paths
+- Missing time steps
+
+Allowing detection of missing data gaps, preventing artificial continuity in tracking results.
+
+### 🔁 3. Restart / Resume Capability
+
+This branch introduces fault tolerance with a possibility to resume after crash or interruption.
+It preserves the cluster IDs and temporal continuity.
+
 ## 📦 Structure
 pyTOOCAN/
 ├── config/   # Parameter files
-├── notebook/ # Jupyter notebooks
-├── scripts/  # CLI runner
-├── src/
-│ └── toocan/
-│ ├── main.py
-│ ├── io/
+├── toocan/
+│ └── config/
+│ ├── lib/
+│ ├── preprocessing/
 │ ├── detection_spreading/
 │ ├── preprocessing/
 │ └── utils/
@@ -45,6 +69,14 @@ PYTHONPATH=src python scripts/run_toocan.py config/params_launch_toocan.dat year
 Launch TOOCAN
 ```bash
 PYTHONPATH=src python config/fileparam_TOOCAN.dat config/fileparam_GEO.dat yearBegin monthBegin dayBegin yearEnd monthEnd dayEnd lonMin lonMax latMin latMax
+```
+
+## 🔁 Restart Capability
+
+If execution stops:
+
+Switch parameter `reprise` in `fileparam_TOOCAN.dat` to 1.
+➡️ Simply relaunch the same command with the new date.
 
 
 ## License
