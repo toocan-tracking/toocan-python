@@ -21,7 +21,7 @@ This repository contains the open-source, modular implementation of TOOCAN.
   Fiolleau, T. and R. Roca, 2013: An Algorithm for the Detection and Tracking of Tropical Mesoscale Convective Systems Using Infrared Images From Geostationary Satellite, IEEE Trans. Geosci. Remote Sens., vol. 51, no. 7, pp. 4302–4315. doi: 10.1109/TGRS.2012.2227762
 
 
-## 🚀 What’s New in TOOCAN-Next
+## 🚀 New features
 
 ### 🛰️ 1. MCS Tracking
 
