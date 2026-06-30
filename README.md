@@ -205,7 +205,7 @@ Users are responsible for verifying scientific validity for their specific appli
 ---
 
 ## 📥 Get the Code
-git clone https://gitlab.in2p3.fr/thomas.fiolleau1/toocan-python.git
+git clone https://github.com/toocan-tracking/toocan-python.git
 
 ---
 
